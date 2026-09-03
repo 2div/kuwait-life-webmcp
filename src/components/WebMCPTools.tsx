@@ -123,6 +123,14 @@ export default function WebMCPTools() {
                   };
                 }
 
+                window.dispatchEvent(
+                new CustomEvent("kuwait-life:webmcp-checklist", {
+                  detail: {
+                    serviceId: service.id,
+                  },
+                }),
+              );
+
                 return {
                   serviceId: service.id,
                   title: service.title,

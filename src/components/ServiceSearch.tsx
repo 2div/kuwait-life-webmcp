@@ -8,6 +8,9 @@ export default function ServiceSearch() {
   const [selectedServiceId, setSelectedServiceId] =
   useState<string | null>(null);
 
+  const [checklistServiceId, setChecklistServiceId] =
+  useState<string | null>(null);
+
   useEffect(() => {
   function handleWebMCPResult(event: Event) {
     const customEvent = event as CustomEvent<{
@@ -46,6 +49,29 @@ useEffect(() => {
     block: "center",
   });
 }, [selectedServiceId]);
+
+useEffect(() => {
+  function handleChecklist(event: Event) {
+    const customEvent = event as CustomEvent<{
+      serviceId: string;
+    }>;
+
+    setChecklistServiceId(customEvent.detail.serviceId);
+    setSelectedServiceId(customEvent.detail.serviceId);
+  }
+
+  window.addEventListener(
+    "kuwait-life:webmcp-checklist",
+    handleChecklist,
+  );
+
+  return () => {
+    window.removeEventListener(
+      "kuwait-life:webmcp-checklist",
+      handleChecklist,
+    );
+  };
+}, []);
 
   const results = searchServices(query);
 
@@ -124,6 +150,44 @@ useEffect(() => {
                 </strong>
               </p>
             </div>
+
+            {checklistServiceId === service.id && (
+          <div className="mt-6 rounded-xl bg-gray-50 p-5">
+            <p className="mb-4 text-sm font-semibold text-gray-900">
+              AI created your checklist
+            </p>
+
+            <div className="space-y-3">
+              {service.documents.map((document) => (
+                <label
+                  key={document}
+                  className="flex items-start gap-3 text-sm text-gray-700"
+                >
+                  <input
+                    type="checkbox"
+                    className="mt-1"
+                  />
+
+                  <span>{document}</span>
+                </label>
+              ))}
+
+              {service.requirements.map((requirement) => (
+                <label
+                  key={requirement}
+                  className="flex items-start gap-3 text-sm text-gray-700"
+                >
+                  <input
+                    type="checkbox"
+                    className="mt-1"
+                  />
+
+                  <span>{requirement}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
 
             <a
               href={service.officialUrl}
