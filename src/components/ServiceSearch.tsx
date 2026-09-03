@@ -3,7 +3,15 @@
 import { useEffect, useState } from "react";
 import { searchServices } from "@/lib/service-search";
 
-export default function ServiceSearch() {
+type ServiceSearchProps = {
+  language: "en" | "ar";
+};
+
+export default function ServiceSearch({
+  language,
+}: ServiceSearchProps) {
+
+  const isArabic = language === "ar";
   const [query, setQuery] = useState("");
   const [selectedServiceId, setSelectedServiceId] =
   useState<string | null>(null);
@@ -82,7 +90,9 @@ useEffect(() => {
           htmlFor="service-search"
           className="mb-2 block text-sm font-medium text-gray-700"
         >
-          What do you need help with?
+          {isArabic
+            ? "ما الخدمة التي تحتاج مساعدة بشأنها؟"
+            : "What do you need help with?"}
         </label>
 
         <input
@@ -93,7 +103,11 @@ useEffect(() => {
             setQuery(event.target.value);
             setSelectedServiceId(null);
           }}
-          placeholder="Try: Civil ID"
+          placeholder={
+            isArabic
+              ? "مثال: البطاقة المدنية"
+              : "Try: Civil ID"
+          }
           className="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-900 outline-none transition focus:border-gray-500"
         />
       </div>
@@ -120,17 +134,17 @@ useEffect(() => {
               </p>
 
               <h2 className="mt-1 text-2xl font-bold text-gray-900">
-                {service.title.en}
+                {service.title[language]}
               </h2>
 
               <p className="mt-2 text-gray-600">
-                {service.description.en}
+                {service.description[language]}
               </p>
             </div>
 
             <div className="mt-5">
               <h3 className="font-semibold text-gray-900">
-                What you may need
+                {isArabic ? "ما قد تحتاج إليه" : "What you may need"}
               </h3>
 
               <ul className="mt-2 space-y-2 text-gray-700">
@@ -142,7 +156,7 @@ useEffect(() => {
 
             <div className="mt-5">
               <p className="text-sm text-gray-600">
-                Fee:{" "}
+                {isArabic ? "الرسوم:" : "Fee:"}:{" "}
                 <strong>
                   {service.fee.amount !== null
                     ? `${service.fee.amount} ${service.fee.currency}`
@@ -154,7 +168,7 @@ useEffect(() => {
             {checklistServiceId === service.id && (
           <div className="mt-6 rounded-xl bg-gray-50 p-5">
             <p className="mb-4 text-sm font-semibold text-gray-900">
-              AI created your checklist
+              {isArabic ? "اختيار الذكاء الاصطناعي" : "AI selected"}
             </p>
 
             <div className="space-y-3">
@@ -195,14 +209,16 @@ useEffect(() => {
               rel="noreferrer"
               className="mt-6 inline-block rounded-xl bg-gray-900 px-5 py-3 font-medium text-white transition hover:bg-gray-700"
             >
-              View official source
+              {isArabic ? "عرض المصدر الرسمي" : "View official source"}
             </a>
           </article>
         ))}
 
         {query && results.length === 0 && (
           <div className="rounded-2xl bg-white p-6 text-center text-gray-600 shadow-sm">
-            No matching service found yet.
+            {isArabic
+              ? "لم يتم العثور على خدمة مطابقة."
+              : "No matching service found yet."}
           </div>
         )}
       </div>
