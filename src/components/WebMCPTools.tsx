@@ -49,6 +49,17 @@ export default function WebMCPTools() {
 
               const results = searchServices(query);
 
+              const topService = results[0];
+
+              window.dispatchEvent(
+                new CustomEvent("kuwait-life:webmcp-result", {
+                  detail: {
+                    query,
+                    serviceId: topService?.id ?? null,
+                  },
+                }),
+              );
+
               return {
                 count: results.length,
 
